@@ -11,6 +11,11 @@ package beepboop;
 public class TimidinFase1 implements State{
 
     private TimidinRobot robot;
+    private double[] corner;
+
+    public void setCorner(double[] corner) {
+        this.corner = corner;
+    }
     
     TimidinFase1(TimidinRobot robot) {
         this.robot = robot;
@@ -18,6 +23,7 @@ public class TimidinFase1 implements State{
     
     @Override
     public void doAction() {
+        System.out.println("Fase 1");
         
     }
 }

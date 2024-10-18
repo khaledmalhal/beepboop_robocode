@@ -15,20 +15,23 @@ public class TimidinRobot extends AdvancedRobot
     private final TimidinFase0 fase0 = new TimidinFase0(this);
     private final TimidinFase1 fase1 = new TimidinFase1(this);
     private final TimidinFaseDefault fdefault = new TimidinFaseDefault(this);
-
+    
+    private Condition cornerCondition = new Condition("get_farthest_corner") {
+        public boolean test() {
+                return (fase0.isCornerCalculated());
+        }
+    };
     
     public void run() {
         this.context.setState(fdefault);
-        addCustomEvent(new Condition("get_farthest_corner") {
-            public boolean test() {
-                return (fase0.isCornerCalculated());
-            }
-        });
+        
+        addCustomEvent(cornerCondition);
         
         while (true) {
             setAdjustRadarForGunTurn(true);
             setAdjustGunForRobotTurn(true);
             this.context.doAction();
+            execute();
         }
     }
     
@@ -55,9 +58,13 @@ public class TimidinRobot extends AdvancedRobot
     }
     
     public void onCustomEvent(CustomEvent e) {
-        if (e.getCondition().getName().equals("get_farthest_corner")) {
+        // System.out.printf("Got custom event! %s\n", e.getCondition().getName());
+        if (e.getCondition().getName().contains("get_farthest_corner")) {
+            System.out.println("Got farthest corner!");
+            this.fase1.setCorner(this.fase0.getCorner());
             this.context.setState(fase1);
-            this.fase0.setCornerCalculated(false);
+            removeCustomEvent(cornerCondition);
+            // this.fase0.setCornerCalculated(false);
         }
     }
 }

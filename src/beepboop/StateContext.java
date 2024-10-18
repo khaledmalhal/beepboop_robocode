@@ -18,8 +18,10 @@ public class StateContext implements State
     }
     
     public void setState(State state) {
-        System.out.println("Changed state!");
-        this.state = state;
+        if (this.state != state) {
+            System.out.println("Changed state!");
+            this.state = state;
+        }
     }
     
     public State getState() {

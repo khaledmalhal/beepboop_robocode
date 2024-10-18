@@ -41,6 +41,7 @@ public class TimidinFase0 implements State
      * @param cornerCalculated 
      */
     public void setCornerCalculated(boolean cornerCalculated) {
+        // System.out.println("Changing corner calculated.");
         this.cornerCalculated = cornerCalculated;
     }
 
@@ -84,8 +85,8 @@ public class TimidinFase0 implements State
      * @return The distance in double of two points.
      */
     public double calculateDistance(double x1, double y1, double x2, double y2) {
-        double a = Math.pow(y1 - x1, 2);
-        double b = Math.pow(y2 - x2, 2);
+        double a = Math.pow(y1 - y2, 2);
+        double b = Math.pow(x1 - x2, 2);
         return Math.sqrt(a + b);
     }
     /**
@@ -127,16 +128,17 @@ public class TimidinFase0 implements State
     public double getEnemyAngle() {
         double bearing = this._bearing;
         double angle = (bearing % 360) + this.robot.getHeading();
-        return angle;
+        return Math.toRadians(angle);
     }
     
     @Override
     public void doAction() {
+        double angle = getEnemyAngle();
         System.out.println("Timidin. Fase 0");
-        double xEnemy = Math.sin(getEnemyAngle()) * this._distance;
-        double yEnemy = Math.cos(getEnemyAngle()) * this._distance;
+        double xEnemy = (Math.sin(angle) * this._distance) + this.robot.getX();
+        double yEnemy = (Math.cos(angle) * this._distance) + this.robot.getY();
         System.out.printf("Angle: %f. Enemy is at (%f, %f)\n", 
-                           getEnemyAngle(), xEnemy, yEnemy);
+                           angle, xEnemy, yEnemy);
         double[] coord = getFarthestCorner(xEnemy, yEnemy);
         System.out.printf("Best corner: (%f, %f)\n", coord[0], coord[1]);
         this.corner = coord;
