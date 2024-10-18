@@ -5,14 +5,20 @@
 package beepboop;
 
 /**
- *
+ * Context class that acts as a wrapper for the State's implementation.
  * @author kmalhal
  */
 public class StateContext implements State
 {    
     private State state;
+    private TimidinRobot robot;
+
+    public StateContext(TimidinRobot robot) {
+        this.robot = robot;
+    }
     
     public void setState(State state) {
+        System.out.println("Changed state!");
         this.state = state;
     }
     

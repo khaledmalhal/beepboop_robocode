@@ -5,7 +5,7 @@
 package beepboop;
 
 /**
- *
+ * Interface of States for the Timidin robot.
  * @author kmalhal
  */
 public interface State {

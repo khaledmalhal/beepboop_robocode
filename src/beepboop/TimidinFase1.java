@@ -6,13 +6,18 @@ package beepboop;
 
 /**
  *
- * @author kmalhal
+ * @author ahkdel
  */
-public class Fase0 implements State 
-{    
+public class TimidinFase1 implements State{
+
+    private TimidinRobot robot;
+    
+    TimidinFase1(TimidinRobot robot) {
+        this.robot = robot;
+    }
+    
     @Override
     public void doAction() {
-        System.out.println("Timidin. Fase 0");
         
     }
 }
