@@ -9,17 +9,13 @@ import robocode.*;
  *
  * @author kmalhal
  */
-public class BeepBoop extends Robocode{
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
+public class TimidinRobot extends Robot
+{
+    private final StateContext context = new StateContext();
+    private final Fase0 fase0 = new Fase0();
     
     public void run() {
-        
+        this.context.setState(fase0);
+        context.doAction();
     }
-    
 }
