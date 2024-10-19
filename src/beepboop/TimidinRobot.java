@@ -36,7 +36,7 @@ public class TimidinRobot extends AdvancedRobot
     }
     
     public void onScannedRobot(ScannedRobotEvent event) {
-        System.out.printf("""
+        /*System.out.printf("""
                           Enemy's bearing: %f
                           Enemy's name: %s
                           Enemy's distance: %f
@@ -45,11 +45,13 @@ public class TimidinRobot extends AdvancedRobot
         System.out.printf("""
                           My heading: %f
                           x, y: (%f, %f)
-                          """, this.getHeading(), this.getX(), this.getY());
-        this.fase0.setBearing(event.getBearing());
-        this.fase0.setDistance(event.getDistance());
-        this.fase0.setName(event.getName());
-        this.context.setState(fase0);
+                          """, this.getHeading(), this.getX(), this.getY());*/
+        if (this.context.getState() == this.fdefault) {
+            this.fase0.setBearing(event.getBearing());
+            this.fase0.setDistance(event.getDistance());
+            this.fase0.setName(event.getName());
+            this.context.setState(fase0);
+        }
         /*if (event.getDistance() < 100) {
             fire(3);
         } else {

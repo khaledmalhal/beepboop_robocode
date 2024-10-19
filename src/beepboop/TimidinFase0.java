@@ -87,27 +87,37 @@ public class TimidinFase0 implements State
      */
     public double[] getFarthestCorner(double x, double y) 
     {
+        double adjust = 30.0;
         double width = this.robot.getBattleFieldWidth();
         double height = this.robot.getBattleFieldHeight();
         double[] coord = {0.0, 0.0};
         double[] corner2 = {width, 0.0};
         double[] corner3 = {0.0, height};
         double[] corner4 = {width, height};
-        double far = Utils.calculateDistance(x, y, coord[0], coord[1]);
-        double res = Utils.calculateDistance(x, y, corner2[0], corner2[1]);
+        double far = MyUtils.calculateDistance(x, y, coord[0], coord[1]);
+        double res = MyUtils.calculateDistance(x, y, corner2[0], corner2[1]);
         if (res > far) {
             far = res;
             coord = corner2;
+            coord[0] = coord[0] - adjust;
+            coord[1] = coord[1] + adjust;
+        } else {
+            coord[0] = coord[0] + adjust;
+            coord[1] = coord[1] + adjust;
         }
-        res = Utils.calculateDistance(x, y, corner3[0], corner3[1]);
+        res = MyUtils.calculateDistance(x, y, corner3[0], corner3[1]);
         if (res > far) {
             far = res;
             coord = corner3;
+            coord[0] = coord[0] + adjust;
+            coord[1] = coord[1] - adjust;
         }
-        res = Utils.calculateDistance(x, y, corner4[0], corner4[1]);
+        res = MyUtils.calculateDistance(x, y, corner4[0], corner4[1]);
         if (res > far) {
             far = res;
             coord = corner4;
+            coord[0] = coord[0] - adjust;
+            coord[1] = coord[1] - adjust;
         }
         return coord;
     }

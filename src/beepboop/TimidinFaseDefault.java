@@ -32,7 +32,7 @@ public class TimidinFaseDefault implements State
      */
     @Override
     public void doAction() {
-        System.out.println("Default fase");
+        // System.out.println("Default fase");
         this.robot.setTurnRadarLeft(10);
     }    
 }

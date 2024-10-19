@@ -8,7 +8,7 @@ package beepboop;
  * Some useful methods that will be used through the whole program.
  * @author ahkdel
  */
-public class Utils {
+public class MyUtils {
     
     /**
      * Calculates the distance of two points.
