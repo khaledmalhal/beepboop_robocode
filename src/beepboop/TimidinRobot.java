@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package beepboop;
+import java.awt.*;
 import robocode.*;
 
 /**
@@ -14,6 +15,7 @@ public class TimidinRobot extends AdvancedRobot
     private final StateContext context = new StateContext(this);
     private final TimidinFase0 fase0 = new TimidinFase0(this);
     private final TimidinFase1 fase1 = new TimidinFase1(this);
+    private final TimidinFase2 fase2 = new TimidinFase2(this);
     private final TimidinFaseDefault fdefault = new TimidinFaseDefault(this);
     
     private Condition cornerCondition = new Condition("get_farthest_corner") {
@@ -28,9 +30,14 @@ public class TimidinRobot extends AdvancedRobot
         addCustomEvent(cornerCondition);
         
         while (true) {
-            setAdjustRadarForGunTurn(true);
+            // setAdjustRadarForGunTurn(true);
             setAdjustGunForRobotTurn(true);
             this.context.doAction();
+            if (this.context.getState() == this.fase1) {
+                double[] corner = this.fase0.getCorner();
+                if (getX() == corner[0] && getY() == corner[1])
+                    this.context.setState(this.fase2);
+            }
             execute();
         }
     }
@@ -46,11 +53,24 @@ public class TimidinRobot extends AdvancedRobot
                           My heading: %f
                           x, y: (%f, %f)
                           """, this.getHeading(), this.getX(), this.getY());*/
-        if (this.context.getState() == this.fdefault) {
+        if (this.context.getState() == this.fdefault)
+        {
             this.fase0.setBearing(event.getBearing());
             this.fase0.setDistance(event.getDistance());
             this.fase0.setName(event.getName());
             this.context.setState(fase0);
+        }
+        else if (this.context.getState() == this.fase1)
+        {
+            System.out.println("Found another enemy!");
+            // setStop();
+            if (getX() - getBattleFieldWidth() > 210.0)
+                setTurnLeftRadians(0.785);
+            else setTurnRightRadians(0.785);
+            setAhead(180);
+            // execute();
+            // while (getDistanceRemaining() > 0.0);
+            this.fase1.setNeedCalculation(true);
         }
         /*if (event.getDistance() < 100) {
             fire(3);
@@ -67,6 +87,14 @@ public class TimidinRobot extends AdvancedRobot
             this.context.setState(fase1);
             removeCustomEvent(cornerCondition);
             // this.fase0.setCornerCalculated(false);
+        }
+    }
+    
+    public void onPaint(Graphics2D g) {
+        g.setColor(Color.ORANGE);
+        if (this.context.getState() == this.fase1) {
+            g.drawOval((int)this.fase0.getCorner()[0], (int)this.fase0.getCorner()[1], 10, 10);
+            g.drawString("Best corner!", (int)this.fase0.getCorner()[0], (int)this.fase0.getCorner()[1]);
         }
     }
 }
