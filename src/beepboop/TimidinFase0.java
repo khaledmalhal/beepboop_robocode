@@ -77,19 +77,6 @@ public class TimidinFase0 implements State
     }
     
     /**
-     * Calculates the distance of two points.
-     * @param x1 X coordinate of point 1.
-     * @param y1 Y coordinate of point 1.
-     * @param x2 X coordinate of point 2.
-     * @param y2 Y coordinate of point 2.
-     * @return The distance in double of two points.
-     */
-    public double calculateDistance(double x1, double y1, double x2, double y2) {
-        double a = Math.pow(y1 - y2, 2);
-        double b = Math.pow(x1 - x2, 2);
-        return Math.sqrt(a + b);
-    }
-    /**
      * Obtains the farthest corner of a robot. 
      * <p>
      * This is used for getting the corner where our {@link robot} will go after
@@ -106,18 +93,18 @@ public class TimidinFase0 implements State
         double[] corner2 = {width, 0.0};
         double[] corner3 = {0.0, height};
         double[] corner4 = {width, height};
-        double far = calculateDistance(x, y, coord[0], coord[1]);
-        double res = calculateDistance(x, y, corner2[0], corner2[1]);
+        double far = Utils.calculateDistance(x, y, coord[0], coord[1]);
+        double res = Utils.calculateDistance(x, y, corner2[0], corner2[1]);
         if (res > far) {
             far = res;
             coord = corner2;
         }
-        res = calculateDistance(x, y, corner3[0], corner3[1]);
+        res = Utils.calculateDistance(x, y, corner3[0], corner3[1]);
         if (res > far) {
             far = res;
             coord = corner3;
         }
-        res = calculateDistance(x, y, corner4[0], corner4[1]);
+        res = Utils.calculateDistance(x, y, corner4[0], corner4[1]);
         if (res > far) {
             far = res;
             coord = corner4;
