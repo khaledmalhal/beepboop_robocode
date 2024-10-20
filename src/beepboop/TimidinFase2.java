@@ -8,7 +8,8 @@ import robocode.Rules;
 import robocode.util.Utils;
 
 /**
- *
+ * In this State, the robot scans the map by turning itself and fires bullets 
+ * at the enemies with the power based on their distance.
  * @author ahkdel
  */
 public class TimidinFase2 implements State
@@ -23,26 +24,40 @@ public class TimidinFase2 implements State
     private double slope;
     private double yInter;
 
-    private double[] corner;
     private double distance;
 
-
+    /**
+     * Constructor of the class. Ideally, it should be a singleton
+     * @param robot The {@link TimidinRobot} in said state.
+     */
     TimidinFase2(TimidinRobot robot) {
         this.robot = robot;
     }
 
+    /**
+     * Set this value to true when the robot is firing, ideally at some enemies.
+     * @param firing Firing flag of the robot.
+     */
     public void setFiring(boolean firing) {
         this.firing = firing;
     }
-
-    public void setCorner(double[] corner) {
-        this.corner = corner;
-    }
-
+    
+    /**
+     * Set the distance between the robot and the enemy.
+     * @param distance Distance between the robot and the enemy.
+     */
     public void setDistance(double distance) {
         this.distance = distance;
     }
 
+    /**
+     * Turn the robot the other corners so it scans the map for more enemies.
+     * Heavily based on {@link TimidinFase1#turnRobotToCorner()} this method turns
+     * the robot to the desired position.
+     * @param x X coordinates of the position to turn to.
+     * @param y Y coordinates of the position to turn to.
+     * @see TimidinFase1#turnRobotToCorner()
+     */
     public void turnRobotToOtherCorner(double x, double y) {
         double x1 = x - this.robot.getX();
         double y1 = y - this.robot.getY();
@@ -54,6 +69,11 @@ public class TimidinFase2 implements State
         this.robot.setTurnRightRadians(targetAngle);
     }
 
+    /**
+     * Scan the map when you are sitting on a corner.
+     * When the robot is at one corner, it will scan from and to the corners 
+     * perpendicular to itself.
+     */
     public void scan() {
         System.out.println("Scanning...");
         double minXCorner = 30.0;
@@ -82,6 +102,15 @@ public class TimidinFase2 implements State
         turnRobotToOtherCorner(x, y);
     }
 
+    /**
+     * Scan the map, calculate the power needed to shot at the enemy and fire bullets.
+     * <p>
+     * The power calculation is a linear function with a negative slope. When the 
+     * enemy is far, it will shoot at minimal power, and vice versa when the enemy is close.
+     * <p>
+     * When the robot find an enemy, it stops turning and shoots at it until the enemy 
+     * dies before continuing scanning the map again.
+     */
     @Override
     public void doAction()
     {

@@ -11,7 +11,9 @@ package beepboop;
 public class MyUtils {
     
     /**
-     * Calculates the distance of two points.
+     * Calculates the Euclidean distance of two points.
+     * Since this is an static method, you can use this function by calling it such as: 
+     * {@code MyUtils.calculateDistance(x1, y1, x2, y2)}.
      * @param x1 X coordinate of point 1.
      * @param y1 Y coordinate of point 1.
      * @param x2 X coordinate of point 2.

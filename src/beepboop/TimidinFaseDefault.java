@@ -16,7 +16,7 @@ public class TimidinFaseDefault implements State
     /**
      * <p>
      * This is the default state of the robot, where it'll be scanning for possible
-     * enemies.
+     * enemies. Ideally, it should be a singleton.
      * @param robot The user's robot.
      */
     TimidinFaseDefault(TimidinRobot robot) {
@@ -28,11 +28,10 @@ public class TimidinFaseDefault implements State
      * It's an override implementation of the abstract class {@link State}.
      * <p>
      * It only turns itself around until it encounters an enemy. Only then, the
-     * robot changes to the {@link Fase0} state.
+     * robot changes to the {@link TimidinFase0} state.
      */
     @Override
     public void doAction() {
-        // System.out.println("Default fase");
         this.robot.setTurnRadarLeft(10);
     }    
 }
