@@ -15,13 +15,26 @@ public class TimidinFase1 implements State {
     private TimidinRobot robot;
     private double[] corner;
     private boolean needCalculation = true;
+    private boolean turning = true;
+
+    TimidinFase1(TimidinRobot robot) {
+        this.robot = robot;
+    }
+    
+    public boolean isNeedCalculation() {
+        return needCalculation;
+    }
     
     public void setNeedCalculation(boolean needCalculation) {
         this.needCalculation = needCalculation;
     }
 
-    TimidinFase1(TimidinRobot robot) {
-        this.robot = robot;
+    public boolean isTurning() {
+        return turning;
+    }
+
+    public void setTurning(boolean turning) {
+        this.turning = turning;
     }
     
     public void setCorner(double[] corner) {
@@ -49,15 +62,21 @@ public class TimidinFase1 implements State {
         
         this.robot.setTurnRightRadians(targetAngle);
         this.needCalculation = false;
+        this.turning = true;
     }
     
     @Override
     public void doAction() {
         // System.out.println("Fase 1");
-        if (this.needCalculation == true)
+        if (this.needCalculation == true && this.robot.getTurnRemainingRadians() == 0)
             turnRobotToCorner();
-        
-        if (this.robot.getTurnRemainingRadians() == 0) {
+        else if (this.turning == true &&
+                 this.robot.getTurnRemainingRadians() == 0.0) {
+            setTurning(false);
+        }
+        else if (this.turning == false && 
+            this.robot.getTurnRemainingRadians() == 0.0) {
+            setNeedCalculation(true);
             double x = this.robot.getX();
             double y = this.robot.getY();
             double dist = MyUtils.calculateDistance(x, y, corner[0], corner[1]);

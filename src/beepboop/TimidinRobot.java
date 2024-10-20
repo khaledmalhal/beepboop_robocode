@@ -20,7 +20,7 @@ public class TimidinRobot extends AdvancedRobot
     
     private Condition cornerCondition = new Condition("get_farthest_corner") {
         public boolean test() {
-                return (fase0.isCornerCalculated());
+            return (fase0.isCornerCalculated());
         }
     };
     
@@ -30,63 +30,52 @@ public class TimidinRobot extends AdvancedRobot
         addCustomEvent(cornerCondition);
         
         while (true) {
-            // setAdjustRadarForGunTurn(true);
-            setAdjustGunForRobotTurn(true);
             this.context.doAction();
-            if (this.context.getState() == this.fase1) {
-                double[] corner = this.fase0.getCorner();
-                if (getX() == corner[0] && getY() == corner[1])
-                    this.context.setState(this.fase2);
-            }
             execute();
         }
     }
     
-    public void onScannedRobot(ScannedRobotEvent event) {
-        /*System.out.printf("""
-                          Enemy's bearing: %f
-                          Enemy's name: %s
-                          Enemy's distance: %f
-                          """, 
-                          event.getBearing(), event.getName(), event.getDistance());
-        System.out.printf("""
-                          My heading: %f
-                          x, y: (%f, %f)
-                          """, this.getHeading(), this.getX(), this.getY());*/
+    public void onScannedRobot(ScannedRobotEvent event) 
+    {
         if (this.context.getState() == this.fdefault)
         {
             this.fase0.setBearing(event.getBearing());
             this.fase0.setDistance(event.getDistance());
             this.fase0.setName(event.getName());
             this.context.setState(fase0);
+            // Reset Radar to same angle as the robot's heading.
+            turnRadarLeft(getRadarHeading() - getHeading());
         }
-        else if (this.context.getState() == this.fase1)
+        else if (this.context.getState() == this.fase1 && 
+                 this.fase1.isNeedCalculation() == false &&
+                 this.fase1.isTurning() == false)
         {
             System.out.println("Found another enemy!");
-            // setStop();
-            if (getX() - getBattleFieldWidth() > 210.0)
-                setTurnLeftRadians(0.785);
-            else setTurnRightRadians(0.785);
-            setAhead(180);
-            // execute();
-            // while (getDistanceRemaining() > 0.0);
-            this.fase1.setNeedCalculation(true);
-        }
-        /*if (event.getDistance() < 100) {
-            fire(3);
-        } else {
+            setStop();
             fire(1);
-        }*/
+            fire(1);
+            fire(1);
+            setTurnLeft(60.0);
+            setAhead(100.0);
+            execute();
+        }
+    }
+    
+    public void onHitRobot(HitRobotEvent event) {
+        setBack(100);
+        if (event.getBearing() < 0) {
+            setTurnRight(45.0);
+        } else {
+            setTurnLeft(45.0);
+        }
     }
     
     public void onCustomEvent(CustomEvent e) {
-        // System.out.printf("Got custom event! %s\n", e.getCondition().getName());
         if (e.getCondition().getName().contains("get_farthest_corner")) {
             System.out.println("Got farthest corner!");
             this.fase1.setCorner(this.fase0.getCorner());
             this.context.setState(fase1);
             removeCustomEvent(cornerCondition);
-            // this.fase0.setCornerCalculated(false);
         }
     }
     
