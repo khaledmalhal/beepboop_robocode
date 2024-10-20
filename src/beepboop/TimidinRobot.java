@@ -12,23 +12,34 @@ import robocode.*;
  */
 public class TimidinRobot extends AdvancedRobot
 {
+    private String lockedEnemy = "";
     private final StateContext context = new StateContext(this);
     private final TimidinFase0 fase0 = new TimidinFase0(this);
     private final TimidinFase1 fase1 = new TimidinFase1(this);
     private final TimidinFase2 fase2 = new TimidinFase2(this);
     private final TimidinFaseDefault fdefault = new TimidinFaseDefault(this);
-    
+
+    private double[] corner;
+
     private Condition cornerCondition = new Condition("get_farthest_corner") {
         public boolean test() {
             return (fase0.isCornerCalculated());
         }
     };
     
+    private Condition arrivedCorner = new Condition("arrived_corner") {
+        public boolean test() {
+            return (context.getState() == fase1 &&
+                    MyUtils.calculateDistance(getX(), getY(), corner[0], corner[1]) == 0.0);
+        }
+    };
+
     public void run() {
         this.context.setState(fdefault);
-        
+
         addCustomEvent(cornerCondition);
-        
+        addCustomEvent(arrivedCorner);
+
         while (true) {
             this.context.doAction();
             execute();
@@ -59,8 +70,16 @@ public class TimidinRobot extends AdvancedRobot
             setAhead(100.0);
             execute();
         }
+        else if (this.context.getState() == this.fase2) {
+            lockedEnemy = event.getName();
+            this.fase2.setFiring(true);
+            this.fase2.setDistance(event.getDistance());
+            stop();
+            setTurnRight(event.getBearing());
+            execute();
+        }
     }
-    
+
     public void onHitRobot(HitRobotEvent event) {
         setBack(100);
         if (event.getBearing() < 0) {
@@ -69,21 +88,36 @@ public class TimidinRobot extends AdvancedRobot
             setTurnLeft(45.0);
         }
     }
-    
+
+    public void onRobotDeath(RobotDeathEvent event) {
+        this.fase2.setFiring(false);
+        if (event.getName().contains(lockedEnemy)) {
+            lockedEnemy = "";
+            setResume();
+        }
+    }
+
     public void onCustomEvent(CustomEvent e) {
         if (e.getCondition().getName().contains("get_farthest_corner")) {
             System.out.println("Got farthest corner!");
-            this.fase1.setCorner(this.fase0.getCorner());
+            corner = this.fase0.getCorner();
+            this.fase1.setCorner(corner);
             this.context.setState(fase1);
             removeCustomEvent(cornerCondition);
         }
+        else if (e.getCondition().getName().contains("arrived_corner")) {
+            System.out.println("I got to my corner!");
+            removeCustomEvent(arrivedCorner);
+            this.fase2.setCorner(corner);
+            this.context.setState(fase2);
+        }
     }
-    
+
     public void onPaint(Graphics2D g) {
         g.setColor(Color.ORANGE);
         if (this.context.getState() == this.fase1) {
-            g.drawOval((int)this.fase0.getCorner()[0], (int)this.fase0.getCorner()[1], 10, 10);
-            g.drawString("Best corner!", (int)this.fase0.getCorner()[0], (int)this.fase0.getCorner()[1]);
+            g.drawOval((int)corner[0], (int)corner[1], 10, 10);
+            g.drawString("Best corner!", (int)corner[0], (int)corner[1]);
         }
     }
 }

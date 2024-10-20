@@ -50,14 +50,7 @@ public class TimidinFase1 implements State {
         double y = corner[1] - this.robot.getY();
         double angle = Math.atan2(x, y);
         double heading = this.robot.getHeadingRadians();
-        /*double maxY = this.robot.getBattleFieldHeight();
-        double dist = MyUtils.calculateDistance(x, y, corner[0], corner[1]);
         
-        if (corner[1] == 0.0) {
-            angle = Math.acos(y/dist);
-        } else {
-            angle = Math.acos((maxY-y)/dist);
-        }*/
         double targetAngle = Utils.normalRelativeAngle(angle - heading);
         
         this.robot.setTurnRightRadians(targetAngle);
